@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import session from "./routes/session.js";
+import authRoutes from './routes/auth.js';
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -8,6 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/session", session);
+app.use('/auth', authRoutes);
 
 // Lancer le serveuyr express
 app.listen(PORT, () => {
