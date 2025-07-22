@@ -31,12 +31,15 @@ export type GyroscopeData = {
 };
 
 export type GPSData = {
-  timestamp: number; // Unix timestamp in milliseconds
-  latitude: number; // Latitude in degrees
-  longitude: number; // Longitude in degrees
-  altitude: number; // Altitude in meters, optional
-  speed?: number; // Speed in meters per second, optional
-  heading?: number; // Heading in degrees, optional
+  timestamp: number;
+  coords: {
+    latitude: number;
+    longitude: number;
+    altitude: number | null;
+    speed?: number;
+    heading?: number;
+    altitudeAccuracy?: number;
+  };
 };
 
 export type BarometerData = {
