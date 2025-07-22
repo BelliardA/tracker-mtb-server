@@ -17,6 +17,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   const collection = db.collection<Session>('session');
   const result = await collection.find({}).toArray();
+  console.log('📦 Récupération de toutes les sessions :', result.length, 'trouvées');
   res.status(200).send(result);
 });
 

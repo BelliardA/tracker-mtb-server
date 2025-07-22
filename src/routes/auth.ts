@@ -34,7 +34,9 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
   };
 
   await collection.insertOne(newUser);
+  console.log('New user created:', newUser.email);
   res.status(201).json({ message: 'User created' });
+
 });
 
 // Login
