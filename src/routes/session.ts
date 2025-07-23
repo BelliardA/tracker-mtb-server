@@ -15,7 +15,7 @@ const router = express.Router();
  * *     description: Retrieve all session from the database.
  */
 router.get('/', async (req, res) => {
-  const collection = db.collection<Session>('session');
+  const collection = db.collection<Session>('sessions');
   const result = await collection.find({}).toArray();
   console.log('📦 Récupération de toutes les sessions :', result.length, 'trouvées');
   res.status(200).send(result);
@@ -70,7 +70,6 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     console.log('📥 Nouvelle session reçue !');
-    console.log('Contenu :', JSON.stringify(req.body, null, 2));
 
     const newSession: SessionInsert = req.body;
     const result = await db.collection('sessions').insertOne(newSession);
