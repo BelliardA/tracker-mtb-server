@@ -3,6 +3,7 @@ import { MongoClient, ServerApiVersion, Db } from 'mongodb';
 
 
 const uri = process.env.ATLAS_URI;
+
 if (!uri) {
   throw new Error('❌ Missing ATLAS_URI in environment variables.');
 }
