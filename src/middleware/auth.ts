@@ -1,9 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-
-import dotenv from 'dotenv';
-dotenv.config();
-
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 declare module 'express-serve-static-core' {

@@ -3,9 +3,8 @@ import db from '../db/connection';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-import dotenv from 'dotenv';
 import { User } from '../types/user';
-dotenv.config();
+
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET as string; // dans .env
