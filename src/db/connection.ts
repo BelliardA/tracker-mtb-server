@@ -1,6 +1,6 @@
 import { version } from 'ethers';
+import 'dotenv/config';
 import { MongoClient, ServerApiVersion, Db } from 'mongodb';
-
 
 const uri = process.env.ATLAS_URI;
 
