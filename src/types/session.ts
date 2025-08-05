@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 
 export type Session = {
-  _id?: string | ObjectId; // MongoDB ObjectId as string
+  _id?: ObjectId; // MongoDB ObjectId as string
   name: string; // Name of the session
   startTime: Date; // Start time of the session
   endTime?: Date | null; // End time of the session, can be null if ongoing
@@ -12,6 +12,10 @@ export type Session = {
     gps: GPSData[]; // Array of GPS data
     barometer: BarometerData[]; // Array of barometer data
   };
+  startTrack?: {
+    latitude: number; // Latitude of the starting point
+    longitude: number; // Longitude of the starting point
+  } | null; // Starting point of the session, can be null if not set
 };
 
 export type SessionInsert = Omit<Session, '_id'>;
