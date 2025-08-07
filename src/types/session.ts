@@ -4,7 +4,7 @@ export type Session = {
   _id?: ObjectId; // MongoDB ObjectId as string
   name: string; // Name of the session
   startTime: Date; // Start time of the session
-  endTime?: Date | null; // End time of the session, can be null if ongoing
+  endTime: Date | null; // End time of the session, can be null if ongoing
   notes?: string; // Additional notes for the session
   sensors: {
     accelerometer: AccelerometerData[]; // Array of accelerometer data
@@ -12,11 +12,12 @@ export type Session = {
     gps: GPSData[]; // Array of GPS data
     barometer: BarometerData[]; // Array of barometer data
   };
-  startTrack?: {
+  startTrack: {
     latitude: number; // Latitude of the starting point
     longitude: number; // Longitude of the starting point
   } | null; // Starting point of the session, can be null if not set
   userId: ObjectId; // User ID associated with the session
+  totalDistance: number; // Total distance covered during the session in kilometers
 };
 
 export type SessionInsert = Omit<Session, '_id'>;

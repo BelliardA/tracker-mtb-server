@@ -5,7 +5,10 @@ import db from '../db/connection';
 import { ObjectId } from 'mongodb';
 import { Session, SessionInsert } from '../types/session';
 
-import { extractStartTrack } from '../controllers/sessionController';
+import {
+  extractStartTrack,
+  calculateTotalDistance,
+} from '../controllers/sessionController';
 
 const router = express.Router();
 
@@ -53,12 +56,14 @@ router.post('/', async (req, res) => {
     console.log('📝 Session à enregistrer :', newSession);
 
     const startTrack = extractStartTrack(newSession);
+    const totalDistance = calculateTotalDistance(newSession);
 
     console.log('📍 Point de départ extrait :', startTrack);
 
     const sessionToSave: Session = {
       ...newSession,
       startTrack,
+      totalDistance,
       userId: new ObjectId((req as any).userId),
     };
 
@@ -73,6 +78,24 @@ router.post('/', async (req, res) => {
     res
       .status(500)
       .json({ error: 'Erreur lors de l’enregistrement de la session' });
+  }
+});
+
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const userId = new ObjectId(req.params.userId);
+    const collection = db.collection<Session>('sessions');
+    const sessions = await collection
+      .find({ userId })
+      .sort({ startTime: -1 })
+      .toArray();
+
+    res.status(200).json(sessions);
+  } catch (error) {
+    console.error('❌ Erreur récupération sessions utilisateur :', error);
+    res.status(500).json({
+      error: 'Erreur lors de la récupération des sessions utilisateur',
+    });
   }
 });
 
