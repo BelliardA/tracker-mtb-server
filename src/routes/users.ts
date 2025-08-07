@@ -3,6 +3,7 @@ import { authMiddleware } from '../middleware/auth.js';
 import db from '../db/connection.js';
 import { ObjectId } from 'mongodb';
 import { User } from '../types/user.js';
+import { updateUserStats } from '../controllers/userController.js';
 
 const router = express.Router();
 
@@ -28,5 +29,8 @@ router.get('/me', authMiddleware, async (req, res) => {
     res.status(500).send({ error: 'Erreur serveur' });
   }
 });
+
+// Nouvelle route pour mettre à jour dynamiquement les stats utilisateur
+router.post('/me/stats', authMiddleware, updateUserStats);
 
 export default router;
