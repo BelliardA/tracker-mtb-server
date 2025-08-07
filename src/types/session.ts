@@ -16,6 +16,7 @@ export type Session = {
     latitude: number; // Latitude of the starting point
     longitude: number; // Longitude of the starting point
   } | null; // Starting point of the session, can be null if not set
+  userId: ObjectId; // User ID associated with the session
 };
 
 export type SessionInsert = Omit<Session, '_id'>;

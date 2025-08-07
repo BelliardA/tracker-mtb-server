@@ -59,6 +59,7 @@ router.post('/', async (req, res) => {
     const sessionToSave: Session = {
       ...newSession,
       startTrack,
+      userId: new ObjectId((req as any).userId),
     };
 
     const result = await db.collection('sessions').insertOne(sessionToSave);

@@ -84,7 +84,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     expiresIn: '7d',
   });
 
-  res.json({ token });
+  res.json({ token, userId: user._id });
 });
 
 export default router;
