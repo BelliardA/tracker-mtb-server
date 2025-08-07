@@ -6,14 +6,29 @@ import bcrypt from 'bcryptjs';
 
 import { User } from '../types/user';
 
-
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET as string; // dans .env
 
 // Signup
 router.post('/signup', async (req: Request, res: Response): Promise<void> => {
-  const { email, password, firstName, lastName, age, gender, bikeType } =
-    req.body;
+  const {
+    email,
+    password,
+    firstName,
+    lastName,
+    nickname,
+    age,
+    gender,
+    bikeBrand,
+    bikeModel,
+    bikeType,
+    ridingStyle,
+    profilePictureUrl,
+    totalRides,
+    totalDistance,
+    bestTrackTime,
+  } = req.body;
+
   const collection = db.collection<User>('users');
 
   const userExist = await collection.findOne({ email });
@@ -28,15 +43,23 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
     password: hashedPassword,
     firstName,
     lastName,
+    nickname,
     age,
     gender,
+    bikeBrand,
+    bikeModel,
     bikeType,
+    ridingStyle,
+    profilePictureUrl,
+    totalRides,
+    totalDistance,
+    bestTrackTime,
+    createdAt: new Date(),
   };
 
   await collection.insertOne(newUser);
   console.log('New user created:', newUser.email);
   res.status(201).json({ message: 'User created' });
-
 });
 
 // Login

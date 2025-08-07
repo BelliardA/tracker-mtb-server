@@ -17,9 +17,14 @@ const router = express.Router();
  * *     description: Retrieve all session from the database.
  */
 router.get('/', async (req, res) => {
+  console.log('🔍 Récupération de toutes les sessions...');
   const collection = db.collection<Session>('sessions');
   const result = await collection.find({}).toArray();
-  console.log('📦 Récupération de toutes les sessions :', result.length, 'trouvées');
+  console.log(
+    '📦 Récupération de toutes les sessions :',
+    result.length,
+    'trouvées'
+  );
   res.status(200).send(result);
 });
 
@@ -38,7 +43,6 @@ router.get('/:id', async (req, res) => {
   if (!result) res.send('Not Found').status(404);
   else res.send(result).status(200);
 });
-
 
 router.post('/', async (req, res) => {
   try {
@@ -60,10 +64,14 @@ router.post('/', async (req, res) => {
     const result = await db.collection('sessions').insertOne(sessionToSave);
 
     console.log('✅ Session enregistrée avec l’ID :', result.insertedId);
-    res.status(201).json({ message: 'Session enregistrée', id: result.insertedId });
+    res
+      .status(201)
+      .json({ message: 'Session enregistrée', id: result.insertedId });
   } catch (error) {
     console.error('❌ Erreur serveur :', error);
-    res.status(500).json({ error: 'Erreur lors de l’enregistrement de la session' });
+    res
+      .status(500)
+      .json({ error: 'Erreur lors de l’enregistrement de la session' });
   }
 });
 
