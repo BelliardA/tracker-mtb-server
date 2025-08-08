@@ -1,7 +1,7 @@
 import express from 'express';
 import { authMiddleware } from '../middleware/auth.js';
 import db from '../db/connection.js';
-import { ObjectId } from 'mongodb';
+import { ObjectId, ModifyResult } from 'mongodb';
 import { User } from '../types/user.js';
 import { updateUserStats } from '../controllers/userController.js';
 
@@ -34,38 +34,39 @@ router.get('/me', authMiddleware, async (req, res) => {
 router.post('/me/stats', authMiddleware, updateUserStats);
 
 // Route pour mettre à jour les informations du profil utilisateur
-router.put('/me', authMiddleware, (req, res): void => {
-  (async () => {
-    try {
-      const userId = (req as any).userId;
-      const collection = db.collection<User>('users');
+router.put('/me', authMiddleware, async (req, res): Promise<void> => {
+  try {
+    const userId = (req as any).userId;
+    const collection = db.collection<User>('users');
+    const updatedFields = req.body as Partial<User>;
 
-      const updatedFields = req.body;
-      console.log(
-        '🔧 Mise à jour utilisateur ID:',
-        userId,
-        'avec:',
-        updatedFields
-      );
+    console.log(
+      '🔧 Mise à jour utilisateur ID:',
+      userId,
+      'avec:',
+      updatedFields
+    );
 
-      const result = await collection.updateOne(
-        { _id: new ObjectId(userId) },
-        { $set: updatedFields }
-      );
+    await collection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: updatedFields }
+    );
 
-      if (result.modifiedCount === 0) {
-        res.status(404).send({ message: 'Aucune modification effectuée.' });
-        return;
-      }
-
-      res.status(200).send({ message: 'Profil mis à jour avec succès.' });
-    } catch (err) {
-      console.error('❌ Erreur lors de la mise à jour du profil :', err);
+    const updatedUser = await collection.findOne({ _id: new ObjectId(userId) });
+    if (!updatedUser) {
       res
-        .status(500)
-        .send({ error: 'Erreur serveur lors de la mise à jour du profil.' });
+        .status(404)
+        .send({ message: 'Utilisateur non trouvé ou aucune modification.' });
+      return;
     }
-  })();
+
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error('❌ Erreur lors de la mise à jour du profil :', err);
+    res
+      .status(500)
+      .send({ error: 'Erreur serveur lors de la mise à jour du profil.' });
+  }
 });
 
 export default router;
