@@ -165,9 +165,9 @@ export function detectTurns(session: SessionInsert): TurnEvent[] {
   const gps = session.sensors?.gps || [];
   const yawDegMin = 30; // deg over window
   // The following lines are commented out to allow testing at low speed or when stationary:
-  // const SPEED_MIN = 2.0; // m/s
-  // const meanSpeed = avgSpeedFromGPS(gps);
-  // if (meanSpeed !== null && meanSpeed < SPEED_MIN) return [];
+  const SPEED_MIN = 2.0; // m/s
+  const meanSpeed = avgSpeedFromGPS(gps);
+  if (meanSpeed !== null && meanSpeed < SPEED_MIN) return [];
 
   // Sliding window over gyro z to integrate yaw
   const turns: TurnEvent[] = [];
