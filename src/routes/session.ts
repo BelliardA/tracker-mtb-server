@@ -8,6 +8,7 @@ import { Session, SessionInsert } from '../types/session';
 import {
   extractStartTrack,
   calculateTotalDistance,
+  analyzeSession,
 } from '../controllers/sessionController';
 
 const router = express.Router();
@@ -58,12 +59,21 @@ router.post('/', async (req, res) => {
     const startTrack = extractStartTrack(newSession);
     const totalDistance = calculateTotalDistance(newSession);
 
+    const analysis = analyzeSession(newSession);
+    console.log('📊 Analyse calculée :', {
+      jumps: analysis.jumps.length,
+      turns: analysis.turns.length,
+      slopes: analysis.slopes.length,
+      score: analysis.difficulty.score,
+    });
+
     console.log('📍 Point de départ extrait :', startTrack);
 
     const sessionToSave: Session = {
       ...newSession,
       startTrack,
       totalDistance,
+      analysis,
       userId: new ObjectId((req as any).userId),
     };
 

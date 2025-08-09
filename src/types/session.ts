@@ -1,5 +1,52 @@
 import { ObjectId } from 'mongodb';
 
+export type JumpEvent = {
+  start: number; // seconds
+  land: number; // seconds
+  airtime: number; // seconds
+  peakG: number;
+  rotInAir: number; // rad integrated during airtime
+  size: 'petit' | 'normal' | 'gros';
+};
+
+export type TurnEvent = {
+  start: number; // seconds
+  end: number; // seconds
+  deltaYawDeg: number; // |∫gz dt| converted to deg
+  meanGz: number; // rad/s
+  latG?: number; // optional proxy of lateral accel if available
+  tightness: 'S' | 'M' | 'L';
+};
+
+export type SlopeSeg = {
+  startIdx: number; // start index in GPS array
+  endIdx: number; // end index in GPS array
+  lengthM: number;
+  gradePct: number;
+  level: 'moderee' | 'raide' | 'tres_raide';
+};
+
+export type DifficultyBreakdown = {
+  jumps: number;
+  turns: number;
+  slopes: number;
+  roughness: number;
+};
+
+export type Analysis = {
+  jumps: JumpEvent[];
+  turns: TurnEvent[];
+  slopes: SlopeSeg[];
+  summary: {
+    jumpCount: number;
+    airtimeTotalSec: number;
+    maxPeakG: number;
+    steepLenM: number;
+    turnsTight: number;
+  };
+  difficulty: { score: number; breakdown: DifficultyBreakdown };
+};
+
 export type Session = {
   _id?: ObjectId; // MongoDB ObjectId as string
   name: string; // Name of the session
@@ -18,6 +65,7 @@ export type Session = {
   } | null; // Starting point of the session, can be null if not set
   userId: ObjectId; // User ID associated with the session
   totalDistance: number; // Total distance covered during the session in kilometers
+  analysis?: Analysis; // Computed analysis (jumps/turns/slopes + score)
 };
 
 export type SessionInsert = Omit<Session, '_id'>;
