@@ -9,6 +9,25 @@ import { User } from '../types/user';
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET as string; // dans .env
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const STRONG_PWD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\p{P}\p{S}]).{12,}$/u;
+
+// Check if email exists
+router.post(
+  '/check-email',
+  async (req: Request, res: Response): Promise<void> => {
+    const { email } = req.body ?? {};
+    if (typeof email !== 'string' || !EMAIL_REGEX.test(email)) {
+      res.status(400).json({ error: 'Invalid email' });
+      return;
+    }
+    const collection = db.collection<User>('users');
+    const exists = !!(await collection.findOne({ email }));
+    res.status(200).json({ exists });
+  }
+);
+
 // Signup
 router.post('/signup', async (req: Request, res: Response): Promise<void> => {
   const {
@@ -28,6 +47,20 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
     totalDistance,
     bestTrackTime,
   } = req.body;
+
+  if (typeof email !== 'string' || !EMAIL_REGEX.test(email)) {
+    res.status(400).json({ error: 'Invalid email' });
+    return;
+  }
+  if (typeof password !== 'string' || !STRONG_PWD_REGEX.test(password)) {
+    res
+      .status(400)
+      .json({
+        error:
+          'Password too weak: min 12 chars, include upper, lower, digit, punctuation.',
+      });
+    return;
+  }
 
   const collection = db.collection<User>('users');
 
