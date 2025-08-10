@@ -69,4 +69,38 @@ router.put('/me', authMiddleware, async (req, res): Promise<void> => {
   }
 });
 
+// Récupérer un utilisateur par ID
+router.get(
+  '/:id',
+  async (req: express.Request, res: express.Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+
+      // Vérif validité de l'ObjectId
+      if (!ObjectId.isValid(id)) {
+        res.status(400).json({ error: 'ID utilisateur invalide' });
+        return;
+      }
+
+      const collection = db.collection<User>('users');
+      const user = await collection.findOne({ _id: new ObjectId(id) });
+
+      if (!user) {
+        res.status(404).json({ error: 'Utilisateur non trouvé' });
+        return;
+      }
+
+      res.status(200).json(user);
+    } catch (err) {
+      console.error(
+        '❌ Erreur lors de la récupération de l’utilisateur :',
+        err
+      );
+      res
+        .status(500)
+        .json({ error: 'Erreur serveur lors de la récupération du profil.' });
+    }
+  }
+);
+
 export default router;
