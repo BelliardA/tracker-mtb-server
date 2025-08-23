@@ -53,12 +53,10 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
     return;
   }
   if (typeof password !== 'string' || !STRONG_PWD_REGEX.test(password)) {
-    res
-      .status(400)
-      .json({
-        error:
-          'Password too weak: min 12 chars, include upper, lower, digit, punctuation.',
-      });
+    res.status(400).json({
+      error:
+        'Password too weak: min 12 chars, include upper, lower, digit, punctuation.',
+    });
     return;
   }
 
